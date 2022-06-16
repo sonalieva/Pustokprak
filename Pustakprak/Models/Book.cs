@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,5 +30,18 @@ namespace Pustakprak.Models
         public Genre Genre { get; set; }
         public Author Author { get; set; }
         public List<BookImage> BookImages { get; set; }
+        [NotMapped]
+        public List<IFormFile> ImageFiles { get; set; }
+        [NotMapped]
+        public IFormFile PosterFile { get; set; }
+
+        [NotMapped]
+        public IFormFile HoverPosterFile { get; set; }
+        [NotMapped]
+        public List<int> ImageIds { get; set; }
+
+        public List<BookTag> BookTags { get; set; } = new List<BookTag>();
+        [NotMapped]
+        public List<int> TagIds { get; set; } = new List<int>();
     }
 }

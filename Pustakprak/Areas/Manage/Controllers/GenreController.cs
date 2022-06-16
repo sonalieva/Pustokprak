@@ -10,60 +10,68 @@ using System.Threading.Tasks;
 namespace Pustakprak.Areas.Manage.Controllers
 {
     [Area("manage")]
-    public class AuthorController : Controller
+    public class GenreController : Controller
     {
         private readonly AppDbContext _context;
 
-        public AuthorController(AppDbContext context)
+        public GenreController(AppDbContext context)
         {
             _context = context;
         }
         public IActionResult Index()
         {
-            var data = _context.Authors.Include(x => x.Books).ToList();
-            return View(data);
+            var model = _context.Genres.Include(x => x.Books).ToList();
+            return View(model);
         }
+
         public IActionResult Create()
         {
             return View();
         }
+
         [HttpPost]
-        public IActionResult Create(Author author)
+        public IActionResult Create(Genre genre)
         {
             if (!ModelState.IsValid)
+                return View();
+
+            if (_context.Genres.Any(x => x.Name == genre.Name))
             {
+                ModelState.AddModelError("Name", "This genre already exist");
                 return View();
             }
 
-            _context.Authors.Add(author);
+            _context.Genres.Add(genre);
             _context.SaveChanges();
 
             return RedirectToAction("index");
         }
+
         public IActionResult Edit(int id)
         {
-            Author author = _context.Authors.FirstOrDefault(x => x.Id == id);
+            Genre genre = _context.Genres.FirstOrDefault(x => x.Id == id);
 
-            if (author == null)
+            if (genre == null)
                 return RedirectToAction("error", "dashboard");
 
-            return View(author);
+            return View(genre);
         }
 
         [HttpPost]
-        public IActionResult Edit(Author author)
+        public IActionResult Edit(int id, Genre genre)
         {
-            if (!ModelState.IsValid)
-                return View();
+            Genre existGenre = _context.Genres.FirstOrDefault(x => x.Id == id);
 
-            Author existAuth = _context.Authors.FirstOrDefault(x => x.Id == author.Id);
-
-            if (existAuth == null)
+            if (existGenre == null)
                 return RedirectToAction("error", "dashboard");
 
-            existAuth.FullName = author.FullName;
-            existAuth.BirthDate = author.BirthDate;
+            if (_context.Genres.Any(x => x.Id != id && x.Name == genre.Name))
+            {
+                ModelState.AddModelError("Name", "This genre already exist");
+                return View();
+            }
 
+            existGenre.Name = genre.Name;
             _context.SaveChanges();
 
             return RedirectToAction("index");
@@ -71,28 +79,15 @@ namespace Pustakprak.Areas.Manage.Controllers
 
         public IActionResult Delete(int id)
         {
-            Author author = _context.Authors.Include(x => x.Books).FirstOrDefault(x => x.Id == id);
+            Genre genre = _context.Genres.FirstOrDefault(x => x.Id == id);
 
-            if (author == null)
+            if (genre == null)
                 return RedirectToAction("error", "dashboard");
 
-            return View(author);
-        }
-
-        [HttpPost]
-        public IActionResult Delete(Author author)
-        {
-            Author existAuth = _context.Authors.FirstOrDefault(x => x.Id == author.Id);
-
-
-            if (existAuth == null)
-                return RedirectToAction("error", "dashboard");
-
-            _context.Authors.Remove(existAuth);
+            _context.Genres.Remove(genre);
             _context.SaveChanges();
 
             return RedirectToAction("index");
         }
-
     }
 }

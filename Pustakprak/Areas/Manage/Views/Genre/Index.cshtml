@@ -1,5 +1,4 @@
-﻿
-@model List<Slider>
+﻿@model List<Genre>
 @{
     ViewData["Title"] = "Index";
     int count = 0;
@@ -15,29 +14,24 @@
                 <thead>
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Subtitle</th>
-                        <th scope="col">Order</th>
-                        <th scope="col">Image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Books count</th>
                         <th scope="col">Actions</th>
+
+
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var slider in Model)
+                    @foreach (var auth in Model)
                     {
                         count++;
                         <tr>
                             <th scope="row">@count</th>
-                            <td>@slider.Title</td>
-                            <td>@slider.SubTitle</td>
-                            <td>@slider.Order</td>
+                            <td>@auth.Name</td>
+                            <td>@auth.Books.Count()</td>
                             <td>
-                                <img width="100" src="~/upload/sliders/@slider.Image">
-                            </td>
-
-                            <td>
-                                <a asp-action="edit" asp-route-id="@slider.Id" class="btn btn-warning">Edit</a>
-                                <a asp-action="delete" asp-route-id="@slider.Id" class="btn btn-danger sweet-delete">Sweet delete</a>
+                                <a asp-action="edit" asp-route-id="@auth.Id" class="btn btn-warning">Edit</a>
+                                <a asp-action="delete" asp-route-id="@auth.Id" class="btn btn-danger sweet-delete">Sweet delete</a>
                             </td>
                         </tr>
                     }
@@ -47,3 +41,4 @@
         </div>
     </div>
 </div>
+

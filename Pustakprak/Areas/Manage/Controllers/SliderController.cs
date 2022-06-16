@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Pustakprak.DAL;
+using Pustakprak.Helpers;
 using Pustakprak.Models;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,6 @@ namespace Pustakprak.Areas.Manage.Controllers
 
             return RedirectToAction("index");
         }
-
         public IActionResult Delete(int id)
         {
             Slider slider = _context.Sliders.FirstOrDefault(x => x.Id == id);
@@ -75,58 +75,58 @@ namespace Pustakprak.Areas.Manage.Controllers
             _context.SaveChanges();
             return Ok();
         }
-
         public IActionResult Edit(int id)
         {
-            //Slider slider = _context.Sliders.FirstOrDefault(x => x.Id == id);
+            Slider slider = _context.Sliders.FirstOrDefault(x => x.Id == id);
 
-            //if (slider == null)
-            //    return RedirectToAction("error", "dashboard");
+            if (slider == null)
+                return RedirectToAction("error", "dashboard");
 
-            return View();
+            return View(slider);
         }
 
-        //[HttpPost]
-        //public IActionResult Edit(Slider slider)
-        //{
-        //    Slider existSlider = _context.Sliders.FirstOrDefault(x => x.Id == slider.Id);
+        [HttpPost]
+        public IActionResult Edit(Slider slider)
+        {
+            Slider existSlider = _context.Sliders.FirstOrDefault(x => x.Id == slider.Id);
 
-        //    if (slider == null)
-        //        return RedirectToAction("error", "dashboard");
+            if (slider == null)
+                return RedirectToAction("error", "dashboard");
 
-        //    if (slider.ImageFile != null)
-        //    {
-        //        if (slider.ImageFile.ContentType != "image/png" && slider.ImageFile.ContentType != "image/jpeg")
-        //        {
-        //            ModelState.AddModelError("ImageFile", "File format must be image/png or image/jpeg");
-        //        }
+            if (slider.ImageFile != null)
+            {
+                if (slider.ImageFile.ContentType != "image/png" && slider.ImageFile.ContentType != "image/jpeg")
+                {
+                    ModelState.AddModelError("ImageFile", "File format must be image/png or image/jpeg");
+                }
 
-        //        if (slider.ImageFile.Length > 2097152)
-        //        {
-        //            ModelState.AddModelError("ImageFile", "File size must be less than 2MB");
-        //        }
+                if (slider.ImageFile.Length > 2097152)
+                {
+                    ModelState.AddModelError("ImageFile", "File size must be less than 2MB");
+                }
 
-        //        if (!ModelState.IsValid)
-        //            return View();
+                if (!ModelState.IsValid)
+                    return View();
 
-        //        string newFileName = FileManager.Save(_env.WebRootPath, "uploads/sliders", slider.ImageFile);
+                string newFileName = FileManager.Save(_env.WebRootPath, "uploads/sliders", slider.ImageFile);
 
-        //        FileManager.Delete(_env.WebRootPath, "uploads/sliders", existSlider.Image);
+                FileManager.Delete(_env.WebRootPath, "uploads/sliders", existSlider.Image);
 
-        //        existSlider.Image = newFileName;
-        //    }
+                existSlider.Image = newFileName;
+            }
 
 
 
-        //    existSlider.Title = slider.Title;
-        //    existSlider.SubTitle = slider.SubTitle;
-        //    existSlider.Desc = slider.Desc;
-        //    existSlider.BtnUrl = slider.BtnUrl;
-        //    existSlider.BtnText = slider.BtnText;
-        //    existSlider.Order = slider.Order;
+            existSlider.Title = slider.Title;
+            existSlider.SubTitle = slider.SubTitle;
+            existSlider.Desc = slider.Desc;
+            existSlider.BtnUrl = slider.BtnUrl;
+            existSlider.BtnText = slider.BtnText;
+            existSlider.Order = slider.Order;
 
-        //    _context.SaveChanges();
-        //    return RedirectToAction("index");
-        //}
+            _context.SaveChanges();
+            return RedirectToAction("index");
+        }
+
     }
 }

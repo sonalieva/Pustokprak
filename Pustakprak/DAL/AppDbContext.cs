@@ -19,6 +19,7 @@ namespace Pustakprak.DAL
         public DbSet<Book> Books { get; set; }
         public DbSet<BookImage> BookImages { get; set; }
         public DbSet<Slider> Sliders { get; set; }
+        public DbSet<BookTag> BookTags { get; set; }
 
     }
 }
